@@ -1,0 +1,3 @@
+Read the docs for Enum and Stream.
+Create a Stream of all the months in a year.
+Write a function that returns every other word in the sample.txt file which starts with “D”, sorted by length and capitalized.
