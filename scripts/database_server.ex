@@ -2,7 +2,7 @@ defmodule DatabaseServer do
 
 	# startup spawns new process
 	def start do
-		#spawn and track some simple state
+		#spawn process, init state, run the loop recursion
 		spawn(fn ->
 			connection = :random.uniform(1000)
 			loop(connection)
@@ -12,7 +12,7 @@ defmodule DatabaseServer do
 		# spawn(&loop/0)
 	end
 
-	# loop defines what the process will look for message-wise while running
+	# loop run receive block in recursive function call
 	defp loop(connection) do
 		receive do # if message sends matching message 
 			{:run_query, from_pid, query_def} -> 

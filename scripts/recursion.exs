@@ -15,6 +15,24 @@ defmodule Recursion do
 	- be certain you are doing this...there are ways to kill yourself
 	"""
 
+	# this is from Chapter 7 learn Elixir's challenge question
+	def sort_file(file_name) do
+
+		case File.read(file_name) do
+			{:ok, file_text} ->
+				file_text
+					|> String.split #first split by whitespace
+					|> Stream.map(&String.capitalize(&1)) #lazy capitalize
+					|> Stream.filter(&String.starts_with?(&1,"D")) #filter for capital D
+					|> Enum.sort(&(byte_size(&1) <= byte_size(&2))) #sort by num of bytes (length)
+					|> Enum.take_every(2) #get every other one
+
+			{:error, err} ->
+				IO.puts(err)
+		end
+		
+	end
+
 #this is not using tail-call optimization...last thing in
 #function needs to be called for that to happen. eventually
 #this could blow up your memory by pushing too much onto the stack
