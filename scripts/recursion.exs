@@ -45,6 +45,7 @@ defmodule Recursion do
 	def fact(0), do: 1
 	def fact(x), do: x * fact(x-1)
 
+	# pass list to length func
 	def length(list) do
 
 		count = 0
