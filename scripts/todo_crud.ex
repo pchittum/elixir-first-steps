@@ -66,6 +66,14 @@ defmodule TodoList do
 		
 	end
 
+	def delete_entry(
+		%TodoList{entries: entries} = todo_list,
+		entry_id
+		) do
+		%TodoList{todo_list | entries: HashDict.delete_entry(entries, entry_id)}
+
+	end
+
 	def entries(%TodoList{entries: entries}, date) do
 		entries
 		|> Stream.filter(fn({_, entry}) -> 
@@ -83,17 +91,57 @@ end
 
 defmodule TodoList.CsvImporter do
 	
-	def import!(filename) do
+	def import(filename) do
+		filename
+		|> read_lines
+		|> create_entries
+		|> TodoList.new
 
-		File.stream!(filename)
-		|> Stream.map(&String.replace(&1, "\n", ""))
-		|> Stream.map(fn(item) -> 
-			String.split(item,",")
-			end)
-		|> Enum.to_list
-		|> List.to_tuple
-		|> IO.inspect
+
+#		File.stream!(filename)
+#		|> Stream.map(&String.replace(&1, "\n", ""))
+#		|> Stream.map(fn(item) -> 
+#			String.split(item,",")
+#			end)
+#		|> convert_date
+#		|> Enum.to_list
+#		|> List.to_tuple
+#		|> IO.inspect
 		
+	end
+
+	defp read_lines(filename) do
+		filename
+		|> File.stream! # stream! breaks the file into lines anyway
+		|> Stream.map(&String.replace(&1, "\n", "")) # remove end of line character
+
+	end
+
+	defp create_entries(lines) do
+		lines
+		|> Stream.map(&extract_fields/1)
+		|> Stream.map(&create_entry/1)
+	end
+
+	defp extract_fields(line) do
+		line
+		|> String.split(",") # split each line into a list pass it into convert date
+		|> convert_date
+	end
+
+	defp convert_date([date_string, title]) do
+		{parse_date(date_string), title} # use pattern matched list into tuple
+	end
+
+	defp parse_date(date_string) do
+		date_string
+		|> String.split("/") # split date by / chars
+		|> Enum.map(&String.to_integer(&1)) # convert each str element into integer
+		|> List.to_tuple # take list of ints and convert to tuple
+	end
+
+	defp create_entry({date, title}) do
+		%{date: date, title: title} # tuple to map
 	end
 
 end

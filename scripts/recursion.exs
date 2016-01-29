@@ -15,7 +15,7 @@ defmodule Recursion do
 	- be certain you are doing this...there are ways to kill yourself
 	"""
 
-	# this is from Chapter 7 learn Elixir's challenge question
+	# this is from Chapter 7 LearnElixir.tv's challenge question
 	def sort_file(file_name) do
 
 		case File.read(file_name) do
